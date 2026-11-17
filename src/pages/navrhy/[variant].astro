@@ -1,0 +1,111 @@
+---
+import { Image } from 'astro:assets';
+import ConceptLayout from '../../layouts/ConceptLayout.astro';
+import Header from '../../components/Header.astro';
+import Arrow from '../../components/Arrow.astro';
+import workshop from '../../assets/workshop-v2.png';
+import activity from '../../assets/azor-activity.jpg';
+import materials from '../../assets/azor-materials.jpg';
+import { azor, conceptCopy as copy, conceptNavigation, type Concept } from '../../data/concepts';
+import { organization, programs, emailLink } from '../../data/home';
+export function getStaticPaths() { return ['a', 'b'].map(variant => ({ params: { variant } })); }
+const variant = Astro.params.variant as Concept;
+const teens = programs[1];
+---
+<ConceptLayout variant={variant}>
+  <Header items={conceptNavigation} />
+  <main id="hlavny-obsah" tabindex="-1">
+    <section id="uvod" class="learning-hero" aria-labelledby="hero-title" tabindex="-1">
+      {variant === 'a' ? (
+        <>
+          <Image class="hero-scene" src={workshop} alt={copy.image.alt} widths={[780, 1200, 1536]} sizes="100vw" format="webp" loading="eager" fetchpriority="high" />
+          <div class="hero-shade" aria-hidden="true"></div>
+          <div class="concept-shell hero-content">
+            <div class="hero-message">
+              <h1 id="hero-title">Vzdelávanie,<br />ktoré prenesiete<br /><span>do praxe.</span></h1>
+              <p>{copy.hero.description}</p>
+              <a class="concept-button" href="#vzdelavanie">{copy.hero.action}<Arrow /></a>
+            </div>
+          </div>
+          <p class="scene-credit">{copy.image.caption}</p>
+        </>
+      ) : (
+        <div class="concept-shell studio-hero">
+          <div class="hero-message">
+            <h1 id="hero-title">Vzdelávanie,<br />ktoré prenesiete<br /><span>do praxe.</span></h1>
+            <p>{copy.hero.description}</p>
+            <a class="concept-button" href="#vzdelavanie">{copy.hero.action}<Arrow /></a>
+          </div>
+          <div class="studio-images">
+            <figure class="studio-main">
+              <Image src={workshop} alt={copy.image.alt} widths={[600, 900, 1200]} sizes="(max-width: 760px) 100vw, 52vw" format="webp" loading="eager" fetchpriority="high" />
+              <figcaption>{copy.image.caption}</figcaption>
+            </figure>
+            <figure class="studio-inset">
+              <Image src={materials} alt="Dieťa pracuje s pracovným listom a plyšovým psíkom v programe Azor." widths={[280, 480]} sizes="(max-width: 760px) 36vw, 200px" format="webp" />
+              <figcaption>Takto vyzerá Azor v praxi.</figcaption>
+            </figure>
+          </div>
+        </div>
+      )}
+    </section>
+
+    <nav class="topic-paths" aria-label="Témy vzdelávania">
+      <div class="concept-shell topic-inner">
+        <a href="#azor"><span>Pozornosť a učenie detí<strong>Môj psík Azor dáva pozor!</strong></span><Arrow /></a>
+        <a href="#tinedzerske-skupiny"><span>Vzťahy a bezpečie v skupine<strong>Vedenie tínedžerských skupín</strong></span><Arrow /></a>
+      </div>
+    </nav>
+
+    <section class="learning-offer concept-shell" id="vzdelavanie" tabindex="-1" aria-labelledby="offer-title">
+      <div class="offer-intro">
+        <h2 id="offer-title">Čo práve riešite<br />vo svojej praxi?</h2>
+        <p>{copy.education.description}</p>
+      </div>
+      <article class="azor-offer" id="azor" tabindex="-1" aria-labelledby="azor-title">
+        {variant === 'a' ? (
+          <>
+            <div class="azor-gallery">
+              <figure class="azor-primary">
+                <Image src={materials} alt="Dieťa rieši pracovný list spolu so svojím plyšovým psíkom." widths={[480, 720, 1100]} sizes="(max-width: 760px) 100vw, 45vw" format="webp" loading="lazy" />
+                <figcaption><a href={azor.source}>{azor.photoCaption}</a></figcaption>
+              </figure>
+              <figure class="azor-secondary">
+                <Image src={activity} alt="Deti s plyšovými psíkmi pri spoločnej rolovej hre." widths={[280, 480]} sizes="(max-width: 760px) 45vw, 240px" format="webp" loading="lazy" />
+              </figure>
+            </div>
+            <div class="azor-copy">
+              <h3 id="azor-title">Môj psík Azor<br /><span>dáva pozor!</span></h3>
+              <p class="audience-label">{azor.audience}</p>
+              <p class="azor-lead">{azor.lead}</p>
+              <p>{azor.description}</p>
+              <details class="learning-details"><summary>Čo je súčasťou programu<span class="disclosure-icon" aria-hidden="true"></span></summary><div><p>{azor.detail}</p><a href={azor.source}>Viac na webe programu<Arrow /></a></div></details>
+              <a class="concept-button" href={azor.inquiry}>Informovať sa o vzdelávaní<Arrow /></a>
+            </div>
+          </>
+        ) : (
+          <>
+            <div class="azor-heading">
+              <div><h3 id="azor-title">Môj psík Azor<br /><span>dáva pozor!</span></h3><p class="audience-label">{azor.audience}</p></div>
+              <div><p class="azor-lead">{azor.lead}</p><p>{azor.description}</p></div>
+            </div>
+            <div class="azor-workbench">
+              <figure class="azor-documentary">
+                <Image src={materials} alt="Dieťa rieši pracovný list spolu so svojím plyšovým psíkom." widths={[480, 720, 1100]} sizes="(max-width: 760px) 100vw, 52vw" format="webp" loading="lazy" />
+                <figcaption><a href={azor.source}>{azor.photoCaption}</a></figcaption>
+              </figure>
+              <div class="learning-notes"><h4>Ako sa deti učia s Azorom</h4><ul>{azor.points.map(point => <li><strong>{point.title}</strong><p>{point.text}</p></li>)}</ul></div>
+            </div>
+            <div class="azor-actions"><details class="learning-details"><summary>Čo je súčasťou programu<span class="disclosure-icon" aria-hidden="true"></span></summary><div><p>{azor.detail}</p><a href={azor.source}>Viac na webe programu<Arrow /></a></div></details><a class="concept-button" href={azor.inquiry}>Informovať sa o vzdelávaní<Arrow /></a></div>
+          </>
+        )}
+      </article>
+      <article class="teens-preview" id="tinedzerske-skupiny" tabindex="-1">
+        <div><h3>Vedenie tínedžerských skupín</h3><p>Bezpečie, vzťahy a aktivity, ktoré otvárajú rozhovor.</p></div>
+        <div class="teen-options">{teens.formats.map(format => <a href={emailLink(`Záujem o vzdelávanie — ${format.name}`)}><span>{format.label}</span><strong>{format.name}</strong><Arrow /></a>)}</div>
+      </article>
+    </section>
+    <section class="concept-contact" id="kontakt" tabindex="-1" aria-labelledby="contact-title"><div class="concept-shell"><h2 id="contact-title">Porozprávajme sa<br />o vašej praxi.</h2><div><p>Pomôžeme vám zorientovať sa v ponuke vzdelávania.</p><a href={`mailto:${organization.email}`}>{organization.email}<Arrow /></a></div></div></section>
+  </main>
+  <footer class="concept-footer concept-shell"><p>APESA · občianske združenie</p><a href={organization.calendar}>Kalendár aktivít<Arrow /></a><a href={organization.website}>O združení APESA<Arrow /></a></footer>
+</ConceptLayout>

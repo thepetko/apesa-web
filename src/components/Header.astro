@@ -1,0 +1,47 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-original.png';
+import { navigation } from '../data/home';
+interface Props { items?: typeof navigation; }
+const { items = navigation } = Astro.props;
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="#uvod" aria-label="APESA — úvod">
+      <Image src={logo} alt="APESA, občianske združenie" width={156} widths={[156, 312]} sizes="156px" format="webp" loading="eager" />
+    </a>
+    <button class="menu-toggle" type="button" aria-controls="navigation" aria-expanded="false" hidden>
+      <span>Menu</span><span class="menu-icon" aria-hidden="true"><span></span><span></span></span>
+    </button>
+    <nav id="navigation" class="navigation" aria-label="Hlavná navigácia">
+      {items.map(({ label, href }) => <a href={href} class:list={{ 'nav-contact': href === '#kontakt' }}>{label}</a>)}
+    </nav>
+  </div>
+</header>
+<script>
+  const button = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.querySelector<HTMLElement>('#navigation');
+  if (button && nav) {
+    button.hidden = false;
+    const media = window.matchMedia('(max-width: 760px)');
+    function setMenu(open: boolean, restoreFocus = false) {
+      button!.setAttribute('aria-expanded', String(open));
+      nav!.hidden = media.matches && !open;
+      if (restoreFocus) button!.focus();
+    }
+    setMenu(false);
+    button.addEventListener('click', () => setMenu(button.getAttribute('aria-expanded') !== 'true'));
+    nav.querySelectorAll<HTMLAnchorElement>('a').forEach(link => link.addEventListener('click', () => {
+      setMenu(false);
+      const destination = document.querySelector<HTMLElement>(link.hash);
+      destination?.focus({ preventScroll: true });
+    }));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') setMenu(false, true);
+    });
+    document.addEventListener('click', event => {
+      if (event.target instanceof Node && !nav.contains(event.target) && !button.contains(event.target)) setMenu(false);
+    });
+    media.addEventListener('change', () => setMenu(false));
+  }
+</script>
